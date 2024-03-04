@@ -1,7 +1,7 @@
-import { LogEntity } from '../entities/log.entity';
+import { LogEntity, LogSeverityLevel } from '../entities/log.entity';
 
-export interface LogRepositoryImpl {
-  save(): void;
-  get(): Promise<LogEntity>;
-  clean(): void;
+export interface LogRepository {
+  save(log: LogEntity): Promise<boolean>;
+  get(severity: LogSeverityLevel): Promise<LogEntity[]>;
+  clean(): Promise<boolean>;
 }

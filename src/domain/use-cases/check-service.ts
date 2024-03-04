@@ -1,4 +1,6 @@
 import { URL } from 'url';
+import { LogRepository } from '../repository/log.repository';
+import { LogEntity, LogSeverityLevel } from '../entities/log.entity';
 
 const fetch = require('node-fetch');
 
@@ -11,6 +13,7 @@ type ErrorCallback = (error: string) => void;
 
 export class CheckService implements CheckServiceImpl {
   constructor(
+    private readonly logRepository: LogRepository,
     private readonly onSuccessCallback: SuccessCallback,
     private readonly onErrorCallback: ErrorCallback
   ) {}
@@ -22,6 +25,8 @@ export class CheckService implements CheckServiceImpl {
 
       if (res.ok) {
         isSuccess = true;
+        const successLog = new LogEntity(LogSeverityLevel.low, `${url} working`);
+        this.logRepository.save(successLog);
         this.onSuccessCallback();
       } else {
         throw new Error('Error on check service');
